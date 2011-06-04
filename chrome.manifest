@@ -1,0 +1,9 @@
+content extendedart  chrome/content/
+locale  extendedart  en-US  chrome/locale/en-US/
+skin    extendedart  classic/1.0 chrome/skin/
+
+
+overlay chrome://albumart/content/albumArtPane.xul chrome://extendedart/content/albumArtPane.xul
+
+
+
