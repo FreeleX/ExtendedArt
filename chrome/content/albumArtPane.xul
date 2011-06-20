@@ -55,10 +55,10 @@
 	</deck>
 	
 	<vbox>
-		<progressmeter mode="undetermined" id="extendedArtProgress" hidden="true"/>
+		<progressmeter mode="undetermined" id="extendedart-progressMeter" hidden="true"/>
 	</vbox>
   
-	<script type="application/x-javascript"
-		src="chrome://extendedart/content/albumArtPane.js" />
+	<script type="application/x-javascript" src="chrome://extendedart/content/lib.js" />
+	<script type="application/x-javascript" src="chrome://extendedart/content/albumArtPane.js" />
 
 </window>

@@ -4,6 +4,5 @@ skin    extendedart  classic/1.0 chrome/skin/
 
 
 overlay chrome://albumart/content/albumArtPane.xul chrome://extendedart/content/albumArtPane.xul
-
-
+overlay chrome://purplerain/content/xul/mainplayer.xul  chrome://extendedart/content/base.xul
 

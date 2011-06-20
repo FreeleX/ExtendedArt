@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay [
+  <!ENTITY % sbDTD SYSTEM "chrome://songbird/locale/songbird.dtd">
+	%sbDTD;
+	<!ENTITY % lmDTD SYSTEM "chrome://extendedart/locale/overlay.dtd">
+	%lmDTD;
+]>
+
+<?xml-stylesheet href="chrome://albumart/skin/albumArt.css" type="text/css"?>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	  
+	<vbox id="servicepane_box">
+		<script type="application/x-javascript" src="chrome://extendedart/content/base.js" />
+		<script type="application/x-javascript" src="chrome://extendedart/content/lib.js" />
+		
+		<vbox id="extendedart-coversViewBox" insertbefore="servicepane" hidden="true" flex="10000">
+			<iframe src="about:blank" id="extendedart-serviceIframe" type="content" flex="10000" />
+			<button id="extendedart-closeButton" label="&extendedart.pane.close;" oncommand="ExtendedArt.lib.showCoversIframePane(false)" height="20"/>
+		</vbox>
+	</vbox>
+	
+</overlay>

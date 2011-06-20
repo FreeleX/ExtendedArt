@@ -2,3 +2,5 @@
 <!ENTITY extendedart.helloworld.accesskey "H">
 <!ENTITY extendedart.pane.label "This is a Display Pane">
 <!ENTITY extendedart.pane.button "Learn More">
+<!ENTITY extendedart.pane.dropHereButton "Drop cover here">
+<!ENTITY extendedart.pane.close "Close">
