@@ -65,9 +65,6 @@ ExtendedArt.Controller = {
 
 	},
 
-	/**
-	* \brief Open new tab with google search, so user can drag pictures directly
-	*/
 	onGoogleSearch: function () {
 		
 		var mediaItem = null;
@@ -186,6 +183,136 @@ ExtendedArt.Controller = {
 					constrHTML = "<table align='center'>" + constrHTML + "</table>";
 					ExtendedArt.lib.showCoversIframePane(true);
 					mainWindow.document.getElementById("extendedart-serviceIframe").contentDocument.body.innerHTML = constrHTML;
+					var scrollWidth = mainWindow.document.getElementById("extendedart-serviceIframe").contentWindow.document.body.scrollWidth;
+					var clientWidth = mainWindow.document.getElementById("extendedart-serviceIframe").contentWindow.document.body.clientWidth;
+					mainWindow.document.getElementById("extendedart-serviceIframe").contentWindow.scrollTo((scrollWidth-clientWidth) / 2, 0);
+				}
+			}
+			else {
+				ExtendedArt.lib.showCoversIframePane(false);
+			}
+		}
+		
+		req.onerror = function () {clearTimeout(abortTimeout); ExtendedArt.lib.showProgress(false);};
+		req.send(null);
+	},
+
+	onYahooSearch: function () {
+		
+		var mediaItem = null;
+		if (AlbumArt._currentState == STATE_PLAYING) {
+			mediaItem = AlbumArt.getNowPlayingItem();
+		}
+		else {
+			if (AlbumArt._mediaListView)
+				mediaItem = AlbumArt._mediaListView.selection.currentMediaItem;
+		}
+
+		if (!mediaItem) return;
+
+		var metadataArtist = mediaItem.getProperty(SBProperties.artistName);
+		var metadataAlbum = mediaItem.getProperty(SBProperties.albumName);
+
+		if (!metadataArtist) metadataArtist = "";
+		if (!metadataAlbum) metadataAlbum = "";
+
+		var goUri = "http://images.search.yahoo.com/search/images?p='" + encodeURIComponent(metadataArtist) + "'%20'" + encodeURIComponent(metadataAlbum) + "'";
+
+		var req = new XMLHttpRequest();
+		if (!req) return;
+		
+		ExtendedArt.lib.showProgress(true);
+
+		req.open("GET", goUri, true);
+		
+		var abortTimeout = setTimeout(function () {req.abort(); ExtendedArt.lib.showProgress(false);}, ExtendedArt.Controller.abortTimeout);
+		
+		req.onreadystatechange = function() {
+			
+			if (this.readyState != 4) return;
+			
+			clearTimeout(abortTimeout);
+			ExtendedArt.lib.showProgress(false);
+			
+			var respHTML = "";
+			if (this.status == 200) {
+				respHTML = this.responseText;
+
+				var mainWindow = window.QueryInterface(Ci.nsIInterfaceRequestor)
+					.getInterface(Ci.nsIWebNavigation)
+					.QueryInterface(Ci.nsIDocShellTreeItem)
+					.rootTreeItem
+					.QueryInterface(Ci.nsIInterfaceRequestor)
+					.getInterface(Ci.nsIDOMWindow);
+
+				var partStart = 0;
+				var constrHTML = "";
+
+				//for (var i=0; i*10000<respHTML.length; i++) {
+				//	alert(respHTML.substr(i*10000, 10000));
+				//}
+				//ExtendedArt.lib.showCoversIframePane(false);
+				//return;
+				alert("here?");
+				var oldPartStart = respHTML.indexOf("<ul id=yschimg>");
+				if (oldPartStart != -1) {
+					alert("in in");
+					var oldPartEnd = respHTML.indexOf("</ul>", oldPartStart);
+					respHTML = respHTML.substring(oldPartStart, oldPartEnd);
+					
+					while (true) {
+						partStart = respHTML.indexOf("<li", partStart+1);
+						if (partStart == -1) {
+							break;
+						}
+
+						var partEnd = respHTML.indexOf("</li>", partStart);
+						var partHTML = respHTML.substring(partStart, partEnd);
+						ExtendedArt.lib.debugOutput("partEnd: " + partEnd);
+
+						var exprSmallImgStart = new RegExp('http\:\/\/ts\.{1,3}\.mm\.bing\.net\/images\/thumbnail\.aspx.{1}q', "i");
+						var smallImgUrlStart = partHTML.search(exprSmallImgStart);
+						var smallImgUrlEnd = partHTML.indexOf("&", smallImgUrlStart);
+						var smallImgUrl = partHTML.substring(smallImgUrlStart, smallImgUrlEnd);
+						ExtendedArt.lib.debugOutput("smallImgUrl: " + smallImgUrl);
+
+						var siteNameHTMLStart = partHTML.indexOf("<address>");
+						var siteNameHTMLEnd = partHTML.indexOf("</address>", siteNameHTMLStart);
+						var siteNameHTML = "<cite>" + partHTML.substring(siteNameHTMLStart+9, siteNameHTMLEnd) + "</cite>";
+						ExtendedArt.lib.debugOutput("siteNameHTML: " + siteNameHTML);
+
+						var imgSizeHTMLStart = partHTML.search(/<em>/);
+						var imgSizeHTMLEnd = partHTML.indexOf("</em>", imgSizeHTMLStart+4);
+						var imgSizeHTML = partHTML.substring(imgSizeHTMLStart+4, imgSizeHTMLEnd);
+						ExtendedArt.lib.debugOutput("imgSizeHTML: " + imgSizeHTML);
+
+						var fullUrlStart = partHTML.indexOf("imgurl=");
+						var fullUrlEnd = partHTML.indexOf("%26rurl=");
+						var fullUrl = partHTML.substring(fullUrlStart+7, fullUrlEnd).replace(/%252F/g, "/");
+						ExtendedArt.lib.debugOutput("fullUrl: " + fullUrl);
+					
+						if (smallImgUrl.substr(0, 4) == "http") {
+							constrHTML += 	"<tr align='center'><td>" +
+										"<a href='" + fullUrl + "' onclick='return false;'><img src='" + smallImgUrl + "' /></a><br>" + 
+										imgSizeHTML + "<br>" + 
+										siteNameHTML +
+										"<hr>" + 
+									"</td></tr>";
+						}
+					}
+				}
+				alert("there?");
+				if (constrHTML == "") {
+					ExtendedArt.lib.showCoversIframePane(false);
+				}
+				else {
+					alert(constrHTML);
+					constrHTML = "<table align='center'>" + constrHTML + "</table>";
+					ExtendedArt.lib.showCoversIframePane(true);
+					mainWindow.document.getElementById("extendedart-serviceIframe").contentDocument.body.innerHTML = constrHTML;
+					var scrollWidth = mainWindow.document.getElementById("extendedart-serviceIframe").contentWindow.document.body.scrollWidth;
+					var clientWidth = mainWindow.document.getElementById("extendedart-serviceIframe").contentWindow.document.body.clientWidth;
+					mainWindow.document.getElementById("extendedart-serviceIframe").contentWindow.scrollTo((scrollWidth-clientWidth) / 2, 0);
 				}
 			}
 			else {

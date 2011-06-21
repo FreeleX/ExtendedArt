@@ -46,6 +46,10 @@
 				label="Google Search"
 				oncommand="ExtendedArt.Controller.onGoogleSearch();"
 				insertafter="getArtworkMenuItem"/>
+			<menuitem id="yahooSearchArtworkMenuItem"
+				label="Yahoo Search"
+				oncommand="ExtendedArt.Controller.onYahooSearch();"
+				insertafter="getArtworkMenuItem"/>
 		</menupopup>
 	</popupset>
 	
