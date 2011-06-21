@@ -87,7 +87,7 @@ ExtendedArt.Controller = {
 		if (!metadataArtist) metadataArtist = "";
 		if (!metadataAlbum) metadataAlbum = "";
 
-		var goUri = "http://www.google.com/search?&q=cover " + encodeURIComponent(metadataArtist) + "%20" + encodeURIComponent(metadataAlbum) + "&tbm=isch";
+		var goUri = "http://www.google.com/search?&q='" + encodeURIComponent(metadataArtist) + "'%20'" + encodeURIComponent(metadataAlbum) + "'&tbm=isch";
 		//this.openAndReuseOneTabPerAttribute("artwork-googlesearch", goUri);
 
 					/*var mainWindow = window.QueryInterface(Ci.nsIInterfaceRequestor)
@@ -169,7 +169,7 @@ ExtendedArt.Controller = {
 					ExtendedArt.lib.debugOutput("fullUrl: " + fullUrl);
 					
 					if (smallImgUrl.substr(0, 4) == "http") {
-						constrHTML += 	"<tr><td>" +
+						constrHTML += 	"<tr align='center'><td>" +
 									"<a href='" + fullUrl + "' onclick='return false;'><img src='" + smallImgUrl + "' /></a><br>" + 
 									imgSizeHTML + "<br>" + 
 									siteNameHTML +
