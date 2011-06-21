@@ -265,7 +265,7 @@ ExtendedArt.Controller = {
 	},
 	
 	onPopupShowing: function () {
-		document.getElementById("googleSearchArtworkMenuItem").hidden = (document.getElementById("getArtworkMenuItem").hidden || AlbumArt._currentState == STATE_SELECTED);
+		document.getElementById("googleSearchArtworkMenuItem").hidden = document.getElementById("getArtworkMenuItem").hidden;
 	}
 };
 
