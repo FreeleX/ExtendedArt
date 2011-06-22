@@ -84,10 +84,10 @@ ExtendedArt.Controller = {
 		if (!metadataArtist) metadataArtist = "";
 		if (!metadataAlbum) metadataAlbum = "";
 
-		var goUri = "http://www.google.com/search?&q='" + encodeURIComponent(metadataArtist) + "'%20'" + encodeURIComponent(metadataAlbum) + "'&tbm=isch";
+		var goUri = "http://images.google.com/search?tbm=isch&hl=en&source=hp&q='" + encodeURIComponent(metadataArtist) + "'%20'" + encodeURIComponent(metadataAlbum) + "'&btnG=Search+Images&gbv=1";
 		//this.openAndReuseOneTabPerAttribute("artwork-googlesearch", goUri);
 
-					/*var mainWindow = window.QueryInterface(Ci.nsIInterfaceRequestor)
+					/*var mainWindow = window.QueryInterface(Ci.nsIInterfaceRequesto)
 					.getInterface(Ci.nsIWebNavigation)
 					.QueryInterface(Ci.nsIDocShellTreeItem)
 					.rootTreeItem
@@ -103,6 +103,7 @@ ExtendedArt.Controller = {
 		if (!req) return;
 		
 		ExtendedArt.lib.showProgress(true);
+		ExtendedArt.lib.debugOutput("Fetch: " + goUri);
 
 		req.open("GET", goUri, true);
 		
@@ -129,9 +130,11 @@ ExtendedArt.Controller = {
 				var constrHTML = "";
 				var partStart = 0;
 
-				//for (var i=0; i*10000<respHTML.length; i++) {
-				//	alert(respHTML.substr(i*10000, 10000));
-				//}
+				/*for (var i=0; i*10000<respHTML.length; i++) {
+					alert(respHTML.substr(i*10000, 10000));
+				}
+				ExtendedArt.lib.showCoversIframePane(false);
+				return;*/
 				
 				while (true) {
 					partStart = respHTML.indexOf("\/imgres\?imgurl", partStart+1);
@@ -147,7 +150,7 @@ ExtendedArt.Controller = {
 					var exprSmallImgStart = new RegExp('http\:\/\/.{2}\.gstatic\.com\/images.{1}q', "i");
 					var smallImgUrlStart = partHTML.search(exprSmallImgStart);
 					var smallImgUrlEnd = partHTML.indexOf("\"", smallImgUrlStart);
-					var smallImgUrl = partHTML.substring(smallImgUrlStart, smallImgUrlEnd);
+					var smallImgUrl = partHTML.substring(smallImgUrlStart, smallImgUrlEnd).replace(/\\x3d/, "=");
 					ExtendedArt.lib.debugOutput("smallImgUrl: " + smallImgUrl);
 
 					var siteNameHTMLStart = partHTML.indexOf("<cite");
@@ -216,12 +219,13 @@ ExtendedArt.Controller = {
 		if (!metadataArtist) metadataArtist = "";
 		if (!metadataAlbum) metadataAlbum = "";
 
-		var goUri = "http://images.search.yahoo.com/search/images?p='" + encodeURIComponent(metadataArtist) + "'%20'" + encodeURIComponent(metadataAlbum) + "'";
+		var goUri = "http://images.search.yahoo.com/search/images?p='" + encodeURIComponent(metadataArtist) + "'%20'" + encodeURIComponent(metadataAlbum) + "'&ei=utf-8&fr=sfp&js=0";
 
 		var req = new XMLHttpRequest();
 		if (!req) return;
 		
 		ExtendedArt.lib.showProgress(true);
+		ExtendedArt.lib.debugOutput("Fetch: " + goUri);
 
 		req.open("GET", goUri, true);
 		
@@ -253,10 +257,9 @@ ExtendedArt.Controller = {
 				//}
 				//ExtendedArt.lib.showCoversIframePane(false);
 				//return;
-				alert("here?");
+				
 				var oldPartStart = respHTML.indexOf("<ul id=yschimg>");
 				if (oldPartStart != -1) {
-					alert("in in");
 					var oldPartEnd = respHTML.indexOf("</ul>", oldPartStart);
 					respHTML = respHTML.substring(oldPartStart, oldPartEnd);
 					
@@ -301,12 +304,11 @@ ExtendedArt.Controller = {
 						}
 					}
 				}
-				alert("there?");
+				
 				if (constrHTML == "") {
 					ExtendedArt.lib.showCoversIframePane(false);
 				}
 				else {
-					alert(constrHTML);
 					constrHTML = "<table align='center'>" + constrHTML + "</table>";
 					ExtendedArt.lib.showCoversIframePane(true);
 					mainWindow.document.getElementById("extendedart-serviceIframe").contentDocument.body.innerHTML = constrHTML;
