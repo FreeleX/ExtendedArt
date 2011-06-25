@@ -38,10 +38,6 @@ ExtendedArt.Controller = {
 		//splitter.setAttribute("disabled", "false");
 		splitter.addEventListener('dragover', function (event) {splitter.setAttribute("state", "open");}, false);
 
-		AlbumArt.animateHeight 		= ExtendedArt.Controller.animateHeight;
-		AlbumArt.onServicepaneResize 	= ExtendedArt.Controller.onServicepaneResize;
-		AlbumArt.onServicepaneResize();
-
 		document.getElementById("switchStateBtn").checked = !AlbumArt._currentState;
 
 		this.hideListenerInterval = setInterval(ExtendedArt.Controller.shouldHideGetArtworkListener, 100);
@@ -73,6 +69,24 @@ ExtendedArt.Controller = {
 
 	},
 
+	onmouseover: function () {
+		ExtendedArt.Controller.hideButtons(false);
+	},
+
+	onmouseout: function () {
+		ExtendedArt.Controller.hideButtons(true);
+	},
+
+	hideButtons: function (needHide) {
+		var btnsBox = document.getElementById("extendedart-btns-hbox");
+		var progress = document.getElementById("extendedart-progressMeter");
+
+		if (!progress.hidden && !needHide) return;
+		if (needHide != btnsBox.hidden) {
+			btnsBox.hidden = needHide;
+		}
+	},
+
 	shouldHideGetArtworkListener: function () {
 		if (AlbumArt.shouldHideGetArtworkCommand()) {
 			document.getElementById("googleSearchArtworkMenuItem").disabled = true;
@@ -91,50 +105,6 @@ ExtendedArt.Controller = {
 			document.getElementById("cutImageBtn").disabled 		= false;
 			document.getElementById("copyImageBtn").disabled 		= false;
 			document.getElementById("pasteImageBtn").disabled 		= false;
-		}
-	},
-
-	onServicepaneResize: function AlbumArt_onServicepaneResize(e) {
-		var imgEl;
-		if (AlbumArt._currentState == STATE_PLAYING) {
-			imgEl = AlbumArt._albumArtPlayingImage;
-		} else {
-			imgEl = AlbumArt._albumArtSelectedImage;
-		}
-
-		// Determine the new actual image dimensions
-		var svgWidth = imgEl.width.baseVal.value;
-		var svgHeight = parseInt(AlbumArt.imageDimensions.aspectRatio * svgWidth);
-		if (Math.abs(svgHeight - AlbumArt._displayPane.height) > 10) {
-			AlbumArt._animating = true;
-			AlbumArt._finalAnimatedHeight = svgHeight;
-			AlbumArt.animateHeight(AlbumArt._displayPane.height);
-		} else {
-			if (!AlbumArt._animating)
-				AlbumArt._displayPane.height = svgHeight+22; // +22 correction
-			else
-				AlbumArt._finalAnimatedHeight = svgHeight;
-		}
-	},
-
-	animateHeight: function AlbumArt_animateHeight(destHeight) {
-		destHeight = parseInt(destHeight);
-		AlbumArt._displayPane.height = destHeight;
-
-		if (destHeight == AlbumArt._finalAnimatedHeight) {
-			AlbumArt._animating = false;
-		} else {
-			var newHeight;
-			var delta = Math.abs(AlbumArt._finalAnimatedHeight - destHeight) / 2;
-			if (delta < 5)
-				newHeight = AlbumArt._finalAnimatedHeight;
-			else {
-				if (AlbumArt._finalAnimatedHeight > destHeight)
-				newHeight = destHeight + delta;
-				else
-				newHeight = destHeight - delta;
-			}
-			setTimeout(AlbumArt.animateHeight, 0, newHeight+11); // +11 correction
 		}
 	},
 

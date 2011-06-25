@@ -56,14 +56,14 @@
 		</menupopup>
 	</popupset>
 
-	<deck id="sb-albumart-deck">
+	<deck id="sb-albumart-deck" onmouseover="ExtendedArt.Controller.onmouseover(event)" onmouseout="ExtendedArt.Controller.onmouseout(event)">
 		<!-- Now Playing Deck -->
 		<stack id="sb-albumart-nowplaying-stack" ondrop="ExtendedArt.Controller.onDrop(event)" />
 	</deck>
 	
-	<vbox>
+	<vbox onmouseover="ExtendedArt.Controller.onmouseover(event)" onmouseout="ExtendedArt.Controller.onmouseout(event)">
 		<progressmeter mode="undetermined" id="extendedart-progressMeter" hidden="true"/>
-		<hbox id="extendedart-btns-hbox" align="center">
+		<hbox id="extendedart-btns-hbox" align="center" hidden="true">
 			<toolbarbutton id="googleSearchCoverBtn" image="chrome://extendedart/content/google-favicon.ico" style="margin:0" flex="1" tooltiptext="Google Images" oncommand="ExtendedArt.Controller.onGoogleSearch();"/>
 			<toolbarbutton id="yahooSearchCoverBtn" image="chrome://extendedart/content/yahoo-favicon.ico" style="margin:0" flex="1" tooltiptext="Yahoo Images" oncommand="ExtendedArt.Controller.onYahooSearch();"/>
 			<toolbarbutton id="cutImageBtn" image="chrome://extendedart/content/cut-icon.png" style="margin:0" flex="1" tooltiptext="&albumart.displaypane.selected.menu.cut;" oncommand="AlbumArt.onCut();"/>
