@@ -10,6 +10,7 @@ if (typeof ExtendedArt == 'undefined') {
 ExtendedArt.Controller = {
 
 	abortTimeout: 30000,
+	hideListenerInterval: null,
 
 	/**
 	* Called when the window finishes loading
@@ -32,16 +33,18 @@ ExtendedArt.Controller = {
 					.rootTreeItem
 					.QueryInterface(Ci.nsIInterfaceRequestor)
 					.getInterface(Ci.nsIDOMWindow);
-		
-		document.getElementById("nowSelectedMenu").addEventListener('popupshowing', this.onPopupShowing, false);
 
 		var splitter = AlbumArt._displayPane._splitter;
-		splitter.setAttribute("disabled", "false");
+		//splitter.setAttribute("disabled", "false");
 		splitter.addEventListener('dragover', function (event) {splitter.setAttribute("state", "open");}, false);
 
 		AlbumArt.animateHeight 		= ExtendedArt.Controller.animateHeight;
 		AlbumArt.onServicepaneResize 	= ExtendedArt.Controller.onServicepaneResize;
 		AlbumArt.onServicepaneResize();
+
+		document.getElementById("switchStateBtn").checked = !AlbumArt._currentState;
+
+		this.hideListenerInterval = setInterval(ExtendedArt.Controller.shouldHideGetArtworkListener, 100);
 	},
 
 
@@ -51,11 +54,11 @@ ExtendedArt.Controller = {
 	onUnLoad: function() {
 		
 		this._initialized = false;
-		
-		document.getElementById("nowSelectedMenu").removeEventListener('popupshowing', this.onPopupShowing, false);
 	
 		var splitter = AlbumArt._displayPane._splitter;
 		splitter.removeEventListener('dragover', function (event) {splitter.setAttribute("state", "open");}, false);
+
+		clearInterval(this.hideListenerInterval);
 	},
 
 
@@ -68,6 +71,27 @@ ExtendedArt.Controller = {
 		// Call this.doHelloWorld() after a 3 second timeout
 		setTimeout(function(controller) { controller.doHelloWorld(); }, 3000, this); 
 
+	},
+
+	shouldHideGetArtworkListener: function () {
+		if (AlbumArt.shouldHideGetArtworkCommand()) {
+			document.getElementById("googleSearchArtworkMenuItem").disabled = true;
+			document.getElementById("yahooSearchArtworkMenuItem").disabled 	= true;
+			document.getElementById("googleSearchCoverBtn").disabled 	= true;
+			document.getElementById("yahooSearchCoverBtn").disabled 	= true;
+			document.getElementById("cutImageBtn").disabled 		= true;
+			document.getElementById("copyImageBtn").disabled 		= true;
+			document.getElementById("pasteImageBtn").disabled 		= true;
+		}
+		else {
+			document.getElementById("googleSearchArtworkMenuItem").disabled = false;
+			document.getElementById("yahooSearchArtworkMenuItem").disabled 	= false;
+			document.getElementById("googleSearchCoverBtn").disabled 	= false;
+			document.getElementById("yahooSearchCoverBtn").disabled 	= false;
+			document.getElementById("cutImageBtn").disabled 		= false;
+			document.getElementById("copyImageBtn").disabled 		= false;
+			document.getElementById("pasteImageBtn").disabled 		= false;
+		}
 	},
 
 	onServicepaneResize: function AlbumArt_onServicepaneResize(e) {
@@ -438,10 +462,6 @@ ExtendedArt.Controller = {
 			return;
 		}
 		
-	},
-	
-	onPopupShowing: function () {
-		document.getElementById("googleSearchArtworkMenuItem").hidden = document.getElementById("getArtworkMenuItem").hidden;
 	}
 };
 
