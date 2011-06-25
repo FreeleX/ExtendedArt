@@ -9,6 +9,7 @@
 		<em:name>ExtendedArt</em:name>
 		<em:version>1.0.0</em:version>
 		<em:creator>LookingMan</em:creator>
+		<em:iconURL>chrome://extendedart/skin/icon.png</em:iconURL>
 
 		<em:description>Extends classic Artwork</em:description>
 
