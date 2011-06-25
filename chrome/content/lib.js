@@ -22,6 +22,7 @@ ExtendedArt.lib = {
 					.getInterface(Ci.nsIDOMWindow);
 
 		document.getElementById("extendedart-progressMeter").hidden = !needShow;
+		document.getElementById("extendedart-btns-hbox").hidden = needShow;
 	},
 
 	showCoversIframePane: function (needShow) {

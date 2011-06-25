@@ -40,6 +40,9 @@
         xmlns:svg="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink">
 
+	<menuitem id="showNowPlayingMenuItem" oncommand="ExtendedArt.Controller.switchState();"/>
+	<menuitem id="showNowSelectedMenuItem" oncommand="ExtendedArt.Controller.switchState();"/>
+
 	<popupset id="albumArtPopupSet">
 		<menupopup id="nowSelectedMenu">
 			<menuitem id="googleSearchArtworkMenuItem"
@@ -52,14 +55,22 @@
 				insertafter="getArtworkMenuItem"/>
 		</menupopup>
 	</popupset>
-	
-	<deck selectedIndex="1" id="sb-albumart-deck" flex="1">
+
+	<deck id="sb-albumart-deck">
 		<!-- Now Playing Deck -->
-		<stack id="sb-albumart-nowplaying-stack"  ondrop="ExtendedArt.Controller.onDrop(event)" />
+		<stack id="sb-albumart-nowplaying-stack" ondrop="ExtendedArt.Controller.onDrop(event)" />
 	</deck>
 	
 	<vbox>
 		<progressmeter mode="undetermined" id="extendedart-progressMeter" hidden="true"/>
+		<hbox id="extendedart-btns-hbox" align="center">
+			<toolbarbutton id="googleSearchCoverBtn" image="chrome://extendedart/content/google-favicon.ico" style="margin:0" flex="1" tooltiptext="Google Images" oncommand="ExtendedArt.Controller.onGoogleSearch();"/>
+			<toolbarbutton id="yahooSearchCoverBtn" image="chrome://extendedart/content/yahoo-favicon.ico" style="margin:0" flex="1" tooltiptext="Yahoo Images" oncommand="ExtendedArt.Controller.onYahooSearch();"/>
+			<toolbarbutton id="cutImageBtn" image="chrome://extendedart/content/cut-icon.png" style="margin:0" flex="1" tooltiptext="&albumart.displaypane.selected.menu.cut;" oncommand="AlbumArt.onCut();"/>
+			<toolbarbutton id="copyImageBtn" image="chrome://extendedart/content/copy-icon.png" style="margin:0" flex="1" tooltiptext="&albumart.displaypane.selected.menu.copy;" oncommand="AlbumArt.onCopy();"/>
+			<toolbarbutton id="pasteImageBtn" image="chrome://extendedart/content/paste-icon.png" style="margin:0" flex="1" tooltiptext="&albumart.displaypane.selected.menu.paste;" oncommand="AlbumArt.onPaste();"/>
+			<toolbarbutton id="switchStateBtn" image="chrome://extendedart/content/now-selected-icon.png" checked="false" style="margin:0" flex="1" tooltiptext="&albumart.displaypane.contextmenu.showselected;" oncommand="ExtendedArt.Controller.switchState();"/>
+		</hbox>
 	</vbox>
   
 	<script type="application/x-javascript" src="chrome://extendedart/content/lib.js" />
