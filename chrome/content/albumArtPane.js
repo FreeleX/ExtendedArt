@@ -155,7 +155,8 @@ ExtendedArt.Controller = {
 
 		var req = new XMLHttpRequest();
 		if (!req) return;
-		
+
+		ExtendedArt.Controller.hideButtons(true);
 		ExtendedArt.lib.showProgress(true);
 		ExtendedArt.lib.debugOutput("Fetch: " + goUri);
 
@@ -270,7 +271,8 @@ ExtendedArt.Controller = {
 
 		var req = new XMLHttpRequest();
 		if (!req) return;
-		
+
+		ExtendedArt.Controller.hideButtons(true);
 		ExtendedArt.lib.showProgress(true);
 		ExtendedArt.lib.debugOutput("Fetch: " + goUri);
 
