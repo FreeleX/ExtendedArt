@@ -41,8 +41,17 @@ ExtendedArt.Controller = {
 		document.getElementById("switchStateBtn").checked = !AlbumArt._currentState;
 
 		this.hideListenerInterval = setInterval(ExtendedArt.Controller.shouldHideGetArtworkListener, 100);
-	},
 
+		// Hook: adjust AlbumArt pane size every time it changes image
+		ExtendedArt.changeImage = AlbumArt.changeImage;
+		AlbumArt.changeImage = function (aNewURL, aImageElement, aNotBox, aDragBox, aStack, isPlayingOrSelected) {
+			if (AlbumArt.changeImage.caller.name == "AlbumArt_changeNowSelected" && AlbumArt._currentState != STATE_SELECTED) return;
+			if (AlbumArt.changeImage.caller.name == "AlbumArt_changeNowPlaying"  && AlbumArt._currentState != STATE_PLAYING)  return;
+
+			ExtendedArt.changeImage(aNewURL, aImageElement, aNotBox, aDragBox, aStack, isPlayingOrSelected);
+			setTimeout(AlbumArt.onServicepaneResize, 100);	// We need to wait a little
+		}
+	},
 
 	/**
 	* Called when the window is about to close
@@ -106,16 +115,32 @@ ExtendedArt.Controller = {
 			document.getElementById("copyImageBtn").disabled 		= false;
 			document.getElementById("pasteImageBtn").disabled 		= false;
 		}
+		//AlbumArt.onServicepaneResize();
 	},
 
 	switchState: function () {
 		var newState = !AlbumArt._currentState;
 		document.getElementById("switchStateBtn").checked = !newState;
+		
 		if (newState) {
 			AlbumArt.switchState(STATE_PLAYING);
+
+			// Check to see if we're already playing something
+			var gMM = Components.classes["@songbirdnest.com/Songbird/Mediacore/Manager;1"].getService(Components.interfaces.sbIMediacoreManager);
+			if ((gMM.status.state == Components.interfaces.sbIMediacoreStatus.STATUS_PLAYING) ||
+			    (gMM.status.state == Components.interfaces.sbIMediacoreStatus.STATUS_PAUSED) ||
+			    (gMM.status.state == Components.interfaces.sbIMediacoreStatus.STATUS_BUFFERING))
+			{
+				var view = gMM.sequencer.view;
+				if (view) {
+					var aItem = view.getItemByIndex(gMM.sequencer.viewPosition);
+					AlbumArt.onBeforeTrackChange(aItem);
+				}
+			}
 		}
 		else {
 			AlbumArt.switchState(STATE_SELECTED);
+			AlbumArt.onSelectionChanged();
 		}
 	},
 
