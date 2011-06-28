@@ -42,6 +42,8 @@ ExtendedArt.Controller = {
 
 		this.hideListenerInterval = setInterval(ExtendedArt.Controller.shouldHideGetArtworkListener, 100);
 
+		AlbumArt.onServicepaneResize();
+
 		// Hook: adjust AlbumArt pane size every time it changes image
 		ExtendedArt.changeImage = AlbumArt.changeImage;
 		AlbumArt.changeImage = function (aNewURL, aImageElement, aNotBox, aDragBox, aStack, isPlayingOrSelected) {
