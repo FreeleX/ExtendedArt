@@ -328,7 +328,7 @@ ExtendedArt.Controller = {
 				var partStart = 0;
 				var constrHTML = "";
 				
-				var oldPartStart = respHTML.indexOf("<ul id=yschimg>");
+				var oldPartStart = respHTML.indexOf("</h2><ul>");
 				if (oldPartStart != -1) {
 					var oldPartEnd = respHTML.indexOf("</ul>", oldPartStart);
 					respHTML = respHTML.substring(oldPartStart, oldPartEnd);
@@ -340,7 +340,7 @@ ExtendedArt.Controller = {
 						}
 
 						var partEnd = respHTML.indexOf("</li>", partStart);
-						var partHTML = respHTML.substring(partStart, partEnd);
+						var partHTML = respHTML.substring(partStart, partEnd+5);
 						ExtendedArt.lib.debugOutput("partEnd: " + partEnd);
 
 						var exprSmallImgStart = new RegExp('http\:\/\/ts\.{1,3}\.mm\.bing\.net\/images\/thumbnail\.aspx.{1}q', "i");
@@ -349,24 +349,35 @@ ExtendedArt.Controller = {
 						var smallImgUrl = partHTML.substring(smallImgUrlStart, smallImgUrlEnd);
 						ExtendedArt.lib.debugOutput("smallImgUrl: " + smallImgUrl);
 
-						var siteNameHTMLStart = partHTML.indexOf("<address>");
-						var siteNameHTMLEnd = partHTML.indexOf("</address>", siteNameHTMLStart);
-						var siteNameHTML = "<cite>" + partHTML.substring(siteNameHTMLStart+9, siteNameHTMLEnd) + "</cite>";
+						var siteNameHTMLStart = partHTML.indexOf('"a":"');
+						var siteNameHTMLEnd = partHTML.indexOf('"', siteNameHTMLStart+5);
+						var siteNameHTML = "<cite>" + partHTML.substring(siteNameHTMLStart+5, siteNameHTMLEnd) + "</cite>";
 						ExtendedArt.lib.debugOutput("siteNameHTML: " + siteNameHTML);
 
-						var imgSizeHTMLStart = partHTML.search(/<em>/);
-						var imgSizeHTMLEnd = partHTML.indexOf("</em>", imgSizeHTMLStart+4);
-						var imgSizeHTML = partHTML.substring(imgSizeHTMLStart+4, imgSizeHTMLEnd);
+						var imgSizeWidthStart = partHTML.indexOf('"w":"');
+						var imgSizeWdithEnd = partHTML.indexOf('"', imgSizeWidthStart+5);
+						var imgSizeWidth = partHTML.substring(imgSizeWidthStart+5, imgSizeWdithEnd);
+
+						var imgSizeHeightStart = partHTML.indexOf('"h":"');
+						var imgSizeHeightEnd = partHTML.indexOf('"', imgSizeHeightStart+5);
+						var imgSizeHeight = partHTML.substring(imgSizeHeightStart+5, imgSizeHeightEnd);
+
+						var imgSizeKBStart = partHTML.indexOf('"s":"');
+						var imgSizeKBEnd = partHTML.indexOf('"', imgSizeKBStart+5);
+						var imgSizeKB = partHTML.substring(imgSizeKBStart+5, imgSizeKBEnd);
+						
+						var imgSizeHTML = imgSizeWidth + " &times; " + imgSizeHeight + " - " + imgSizeKB;
 						ExtendedArt.lib.debugOutput("imgSizeHTML: " + imgSizeHTML);
 
 						var fullUrlStart = partHTML.indexOf("imgurl=");
-						var fullUrlEnd = partHTML.indexOf("%26rurl=");
-						var fullUrl = partHTML.substring(fullUrlStart+7, fullUrlEnd).replace(/%252F/g, "/");
+						var fullUrlEnd = partHTML.indexOf("&rurl=");
+						var fullUrl = decodeURIComponent("http://" + partHTML.substring(fullUrlStart+7, fullUrlEnd).replace(/%252F/g, "/"));
+						
 						ExtendedArt.lib.debugOutput("fullUrl: " + fullUrl);
 					
 						if (smallImgUrl.substr(0, 4) == "http") {
 							constrHTML += 	"<tr align='center'><td>" +
-										"<a href='" + fullUrl + "' onclick='return false;'><img src='" + smallImgUrl + "' /></a><br>" + 
+										"<a href='" + fullUrl + "' onclick='return false;'><img src='" + smallImgUrl + "' /></a><br>" +
 										imgSizeHTML + "<br>" + 
 										siteNameHTML +
 										"<hr>" + 
@@ -374,7 +385,10 @@ ExtendedArt.Controller = {
 						}
 					}
 				}
-				
+				else {
+					ExtendedArt.lib.debugOutput("ul not found");
+				}
+
 				if (constrHTML == "") {
 					ExtendedArt.lib.showCoversIframePane(false);
 				}
