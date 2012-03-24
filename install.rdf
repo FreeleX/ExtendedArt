@@ -21,5 +21,13 @@
 			</Description>
 		</em:targetApplication>
 
+		<em:targetApplication>
+			<Description>
+				<em:id>nightingale@getnightingale.com</em:id>
+				<em:minVersion>1.11.0</em:minVersion>
+				<em:maxVersion>1.12.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
 	</Description>
 </RDF>
